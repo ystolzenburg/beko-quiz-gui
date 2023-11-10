@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="de" class="h-100">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
@@ -32,14 +32,16 @@
   </script>
   <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
-<body>
+<body class="d-flex flex-column h-100">
 <nav class="navbar bg-dark border-bottom border-body" data-bs-theme="dark">
   <div class="w-100 px-3 m-auto" style="max-width: 800px">
     <span class="navbar-brand mb-0 h1">Die BeKo-Overkill-3000-DTM</span>
   </div>
 </nav>
 
-<div class="container-sm pt-2" style="max-width: 800px;">
+<div class="container pt-2" style="max-width: 800px;">
+
+  <!-- user notice-->
   <div class="card text-center mb-3">
     <div class="card-body">
       <h5 class="card-title">⚠️ Achtung</h5>
@@ -52,6 +54,7 @@
     </div>
   </div>
 
+  <!-- upload container-->
   <div id="upload-container">
     <div class="mb-3">
       <textarea class="form-control" placeholder="Hier das JSON-Object einegben: {'name':'BeKo2223 Quiz_x','..."
@@ -63,6 +66,16 @@
   </div>
   <div id="quiz-container"></div>
 </div>
+
+<!-- footer -->
+<footer class="footer mt-auto py-3 bg-body-tertiary">
+  <div class="container" style="max-width: 800px">
+    <span class="text-body-secondary">
+      &copy; <a href="https://git.tu-berlin.de/j.froembgen/beko-quiz-dtm" target="_blank">BeKo Quiz DTM</a>
+    </span>
+  </div>
+</footer>
+
 <script src="src/main.js"></script>
 </body>
 </html>
