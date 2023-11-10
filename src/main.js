@@ -61,6 +61,8 @@ function createQuestionsDocument(data) {
  * @returns {*} - The formatted text
  */
 function formatText(text) {
+  // replace '\n' with '<br>'
+  text = text.replace(/\n/g, '<br>');
   return text.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
 }
 
