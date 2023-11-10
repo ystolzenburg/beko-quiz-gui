@@ -3,6 +3,7 @@
  * @param data  {object} - The JSON data
  */
 function createQuestionsDocument(data) {
+  document.getElementById('quiz-id').innerText = data.name;
   const container = document.getElementById('quiz-container');
 
   data.questionList.forEach((question, index) => {
