@@ -1,82 +1,184 @@
 <!DOCTYPE html>
 <html lang="de" class="h-100">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
-  <title>BeKo-DTM für Quizzes</title>
-  <link rel="stylesheet" href="src/style.css">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+	<head>
+		<meta charset="utf-8" />
+		<meta
+			name="viewport"
+			content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>BeKo-DTM für Quizzes</title>
+		<link
+			href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+			rel="stylesheet"
+			integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+			crossorigin="anonymous" />
 
-  <!-- Android  -->
-  <meta name="theme-color" content="black">
-  <meta name="mobile-web-app-capable" content="yes">
+		<!-- Android  -->
+		<meta name="theme-color" content="black" />
+		<meta name="mobile-web-app-capable" content="yes" />
 
-  <!-- iOS -->
-  <meta name="apple-mobile-web-app-title" content="Application Title">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+		<!-- iOS -->
+		<meta name="apple-mobile-web-app-title" content="Application Title" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="default" />
 
-  <!-- favicon and apple touch image-->
-  <link rel="icon" type="image/png" href="src/icon.jpg">
-  <link rel="apple-touch-icon" href="src/icon.jpg">
+		<!-- MathJax CDN -->
+		<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+		<script>
+			// MathJax configuration for the quiz ($...$ for inline math and \(...\) for display math)
+			window.MathJax = {
+				tex: {
+					inlineMath: [
+						["$", "$"],
+						["\\(", "\\)"],
+					],
+				},
+				svg: { fontCache: "global" },
+			};
+		</script>
+		<script
+			id="MathJax-script"
+			async
+			src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+	</head>
+	<body class="d-flex flex-column h-100">
+		<nav class="navbar bg-dark border-bottom border-body" data-bs-theme="dark">
+			<div class="w-100 px-3 m-auto" style="max-width: 800px">
+				<span class="navbar-brand mb-0 h1">Die BeKo-Overkill-3000-DTM</span>
+			</div>
+		</nav>
 
-  <!-- MathJax CDN -->
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+		<div class="container pt-2" style="max-width: 800px">
+			<!-- user notice-->
+			<div class="card text-center mb-3">
+				<div class="card-body">
+					<h5 class="card-title">⚠️ Achtung</h5>
+					<p class="card-text">
+						Es ist <b>unentscheidbar</b>, ob diese DTM die Sprache aller
+						existierenden BeKo-Quizzes akzeptiert... <br />Ist bestimmt
+						NP-schwer oder so...
+					</p>
+				</div>
+				<div class="card-footer text-muted">
+					Nutzung auf eigene Gefahr ¯\_(ツ)_/¯
+				</div>
+			</div>
+
+			<!-- upload container-->
+			<div id="upload-container">
+				<div class="mb-3">
+					<textarea
+						class="form-control"
+						placeholder="Hier das JSON-Object eingeben: {'name':'BeKo2223 Quiz_x','..."
+						id="json-value"
+						rows="3"></textarea>
+				</div>
+				<div class="mb-3">
+					<button id="upload-btn" class="btn btn-lg w-100 btn-primary">
+						Für BeKo-Genießer lesbar machen
+					</button>
+				</div>
+			</div>
+			<h1 class="text-center" id="quiz-id"></h1>
+			<div id="quiz-container"></div>
+		</div>
+
+		<!-- footer -->
+		<footer class="footer mt-auto py-3 bg-body-tertiary">
+			<div class="container" style="max-width: 800px">
+				<span class="text-body-secondary">
+					&copy;
+					<a
+						href="https://git.tu-berlin.de/j.froembgen/beko-quiz-dtm"
+						target="_blank"
+						>BeKo Quiz DTM</a
+					>
+				</span>
+			</div>
+		</footer>
+	</body>
   <script>
-    // MathJax configuration for the quiz ($...$ for inline math and \(...\) for display math)
-    window.MathJax = {
-      tex: {inlineMath: [['$', '$'], ['\\(', '\\)']]},
-      svg: {fontCache: 'global'}
-    };
+    function createQuestionsDocument(data) {
+      document.getElementById("quiz-id").innerText = data.name;
+      const container = document.getElementById("quiz-container");
+
+      data.questionList.forEach((question, index) => {
+        // Create the card element
+        const cardEl = document.createElement("div");
+        cardEl.className = "card my-3"; // Bootstrap card with margin
+
+        // Create the card body
+        const cardBodyEl = document.createElement("div");
+        cardBodyEl.className = "card-body";
+
+        const cardBodyEl2 = document.createElement("div");
+        cardBodyEl2.className = "card-body";
+
+        // Add question to the card body
+        cardBodyEl.innerHTML = `<h5 class="card-title">Frage ${
+          index + 1
+        }</h5> <p class="card-text">${formatText(question.questionText)}</p>`;
+
+        const answersListEl = document.createElement("ul");
+        answersListEl.className = "list-group list-group-flush"; // Bootstrap list group
+
+        question.answerOptionList.forEach((option, answerIndex) => {
+          const answerEl = document.createElement("li");
+          answerEl.className = "list-group-item"; // Bootstrap list group item
+          answerEl.innerHTML = formatText(option.answerText);
+          // Add a class if the answer is correct
+          if (option.isCorrect) answerEl.classList.add("correct-answer");
+          answersListEl.appendChild(answerEl);
+        });
+
+        // Create a button to toggle correct answers
+        const toggleButton = document.createElement("button");
+        toggleButton.className = "btn btn-sm btn-success";
+        toggleButton.innerText = "auflösen";
+        toggleButton.onclick = function () {
+          // Toggle visibility of correct answers within this card
+          cardEl.querySelectorAll(".correct-answer").forEach((answer) => {
+            answer.style.color = "#27ae60";
+            toggleButton.parentElement.style.display = "none";
+          });
+        };
+
+        cardEl.appendChild(cardBodyEl);
+        cardEl.appendChild(answersListEl);
+        cardBodyEl2.appendChild(toggleButton);
+        cardEl.appendChild(cardBodyEl2);
+        container.appendChild(cardEl);
+      });
+
+      // Call MathJax to typeset the new content
+      MathJax.typesetPromise();
+    }
+
+    /**
+     * Format the text to replace '**text**' with '<b>text</b>'
+     * @param text {string} - The text to format
+     * @returns {*} - The formatted text
+     */
+    function formatText(text) {
+      // replace '\n' with '<br>'
+      text = text.replace(/\n/g, "<br>");
+      return text.replace(/\*\*(.*?)\*\*/g, "<b>$1</b>");
+    }
+
+    // Add an event listener to the upload button
+    document.getElementById("upload-btn").addEventListener("click", () => {
+      try {
+        // Get the JSON data from the textarea and parse it
+        const data = JSON.parse(document.getElementById("json-value").value);
+
+        // hide the upload button and the textarea
+        document.getElementById("upload-container").style.display = "none";
+
+        // Call the function to create the quiz document
+        createQuestionsDocument(data);
+      } catch (error) {
+        // Handle parsing error
+        alert("Hm, diese Sprache wird nicht akzeptiert :(", error.message);
+      }
+    });
   </script>
-  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-</head>
-<body class="d-flex flex-column h-100">
-<nav class="navbar bg-dark border-bottom border-body" data-bs-theme="dark">
-  <div class="w-100 px-3 m-auto" style="max-width: 800px">
-    <span class="navbar-brand mb-0 h1">Die BeKo-Overkill-3000-DTM</span>
-  </div>
-</nav>
-
-<div class="container pt-2" style="max-width: 800px;">
-
-  <!-- user notice-->
-  <div class="card text-center mb-3">
-    <div class="card-body">
-      <h5 class="card-title">⚠️ Achtung</h5>
-      <p class="card-text">Es ist <b>unentscheidbar</b>, ob diese DTM die Sprache aller existierenden BeKo-Quizzes
-        akzeptiert...
-        <br>Ist bestimmt NP-schwer oder so...</p>
-    </div>
-    <div class="card-footer text-muted">
-      Nutzung auf eigene Gefahr ¯\_(ツ)_/¯
-    </div>
-  </div>
-
-  <!-- upload container-->
-  <div id="upload-container">
-    <div class="mb-3">
-      <textarea class="form-control" placeholder="Hier das JSON-Object eingeben: {'name':'BeKo2223 Quiz_x','..."
-                id="json-value" rows="3"></textarea>
-    </div>
-    <div class="mb-3">
-      <button id="upload-btn" class="btn btn-lg w-100 btn-primary">Für BeKo-Genießer lesbar machen</button>
-    </div>
-  </div>
-  <h1 class="text-center" id="quiz-id"></h1>
-  <div id="quiz-container"></div>
-</div>
-
-<!-- footer -->
-<footer class="footer mt-auto py-3 bg-body-tertiary">
-  <div class="container" style="max-width: 800px">
-    <span class="text-body-secondary">
-      &copy; <a href="https://git.tu-berlin.de/j.froembgen/beko-quiz-dtm" target="_blank">BeKo Quiz DTM</a>
-    </span>
-  </div>
-</footer>
-
-<script src="src/main.js"></script>
-</body>
 </html>
