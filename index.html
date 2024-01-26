@@ -31,21 +31,21 @@
 			async
 			src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 	</head>
-	<body class="d-flex flex-column h-100 mx-auto" style="max-width: 800px">
+	<body class="d-flex flex-column h-100 mx-auto" style="max-width: 800px; overflow-y: scroll;">
 		<nav class="navbar" data-bs-theme="dark">
-			<div class="w-100 px-3 m-auto rounded-4">
-				<span class="navbar-brand mb-0 h1 text-black">BeKo Quiz GUI</span>
+			<div class="py-2 rounded-4">
+				<span class="navbar-brand h1 text-black">BeKo Quiz GUI</span>
 			</div>
 		</nav>
 
 		<div class="container pt-2">
 			<!-- user notice-->
-			<div class="card text-center mb-3">
-				<div class="card-body">
+			<div class="card text-center">
+				<div class="card-body bg-body-secondary ">
 					<div id="upload-container">
 						<div class="mb-3">
 							<label for="file-upload" class="form-label"
-								>Quiz JSON auswählen</label
+								>Quiz JSON</label
 							>
 							<input
 								class="form-control"
@@ -57,12 +57,12 @@
 						<div class="mb-3">
 							<textarea
 								class="form-control"
-								placeholder="Hier das JSON-Object eingeben: {'name':'BeKo2223 Quiz_x','..."
+								placeholder="JSON eingeben: {'name':'Quiz','..."
 								id="json-value"
 								rows="3"></textarea>
 						</div>
 
-						<div class="mb-3">
+						<div>
 							<button id="upload-btn" class="btn btn-lg w-100 btn-primary">
 								Quiz anzeigen
 							</button>
@@ -78,7 +78,7 @@
 			</div>
 		</div>
 
-		<h1 class="text-center" id="quiz-id"></h1>
+		<h3 class="mt-5" id="quiz-id"></h1>
 		<div id="quiz-container"></div>
 	</body>
 	<script>
@@ -96,7 +96,7 @@
 				cardBodyEl.className = "card-body";
 
 				const cardBodyEl2 = document.createElement("div");
-				cardBodyEl2.className = "card-body";
+				cardBodyEl2.className = "card-body bg-body-tertiary";
 
 				// Add question to the card body
 				cardBodyEl.innerHTML = `<h5 class="card-title">Frage ${
@@ -122,8 +122,9 @@
 				toggleButton.onclick = function () {
 					// Toggle visibility of correct answers within this card
 					cardEl.querySelectorAll(".correct-answer").forEach((answer) => {
-						answer.style.color = "#27ae60";
-						toggleButton.parentElement.style.display = "none";
+						answer.style.color = "white";
+            answer.style.backgroundColor = "darkgreen";
+            toggleButton.style.display = "none";
 					});
 				};
 
@@ -187,7 +188,7 @@
 				document.getElementById("retry-btn").style.display = "block";
 			} catch (error) {
 				// Handle parsing error
-				alert("Hm, diese Sprache wird nicht akzeptiert :(", error.message);
+				alert("Fehler beim Lesen der Eingabe", error.message);
 			}
 		});
 	</script>
