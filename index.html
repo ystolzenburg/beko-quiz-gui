@@ -31,7 +31,9 @@
 			async
 			src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 	</head>
-	<body class="d-flex flex-column h-100 mx-auto" style="max-width: 800px; overflow-y: scroll;">
+	<body
+		class="d-flex flex-column h-100 mx-auto"
+		style="max-width: 800px; overflow-y: scroll">
 		<nav class="navbar" data-bs-theme="dark">
 			<div class="py-2 rounded-4">
 				<span class="navbar-brand h1 text-black">BeKo Quiz GUI</span>
@@ -41,12 +43,10 @@
 		<div class="container pt-2">
 			<!-- user notice-->
 			<div class="card text-center">
-				<div class="card-body bg-body-secondary ">
+				<div class="card-body bg-body-secondary">
 					<div id="upload-container">
 						<div class="mb-3">
-							<label for="file-upload" class="form-label"
-								>Quiz JSON</label
-							>
+							<label for="file-upload" class="form-label">Quiz JSON</label>
 							<input
 								class="form-control"
 								type="file"
@@ -82,6 +82,20 @@
 		<div id="quiz-container"></div>
 	</body>
 	<script>
+		function difficultyToText(difficulty) {
+			if (difficulty <= 3) {
+				return "einfach";
+			} else if (difficulty >= 4 && difficulty <= 6) {
+				return "mittel";
+			} else if (difficulty >= 7 && difficulty < 9) {
+				return "schwer";
+			} else if (difficulty >= 9) {
+				return "sehr schwer";
+			} else {
+				return "unbekannt";
+			}
+		}
+
 		function createQuestionsDocument(data) {
 			document.getElementById("quiz-id").innerText = data.name;
 			const container = document.getElementById("quiz-container");
@@ -99,9 +113,50 @@
 				cardBodyEl2.className = "card-body bg-body-tertiary";
 
 				// Add question to the card body
-				cardBodyEl.innerHTML = `<h5 class="card-title">Frage ${
-					index + 1
-				}</h5> <p class="card-text">${formatText(question.questionText)}</p>`;
+				cardBodyEl.innerHTML = `
+				<div style="display: flex; justify-content: space-between;">
+					<h5 class="card-title">Frage ${index + 1}</h5>
+					<span class="pb-3 text-secondary">${difficultyToText(
+								question.difficulty
+							)}</span>
+				</div>
+				<p class="card-text">${formatText(question.questionText)}</p>`;
+
+				if (question.TYPE == "RangedQuestion") {
+					const answerInput = document.createElement("input");
+					answerInput.type = "number";
+					answerInput.className = "range-input w-100";
+					answerInput.min = question.rangeMin;
+					answerInput.max = question.rangeMax;
+					cardBodyEl.appendChild(answerInput);
+					cardEl.appendChild(cardBodyEl);
+
+					// Create a button to toggle correct answers
+					const toggleButton = document.createElement("button");
+					toggleButton.className = "btn btn-sm btn-success";
+					toggleButton.innerText = "auflösen";
+					toggleButton.onclick = function () {
+						// check if entered value is correct (absolute with 0 tolerance)
+						if (answerInput.value == question.correctValue) {
+							answerInput.style.color = "white";
+							answerInput.style.backgroundColor = "darkgreen";
+						} else {
+							answerInput.style.color = "white";
+							answerInput.style.backgroundColor = "darkred";
+						}
+					};
+					cardBodyEl2.appendChild(toggleButton);
+
+					const correctAnswer = document.createElement("p");
+					correctAnswer.className = "correct-answer";
+					correctAnswer.style.display = "none";
+					correctAnswer.innerText = `Die richtige Antwort ist: ${question.correctValue}`;
+					cardBodyEl2.appendChild(correctAnswer);
+
+					cardEl.appendChild(cardBodyEl2);
+					container.appendChild(cardEl);
+					return;
+				}
 
 				const answersListEl = document.createElement("ul");
 				answersListEl.className = "list-group list-group-flush"; // Bootstrap list group
@@ -123,8 +178,8 @@
 					// Toggle visibility of correct answers within this card
 					cardEl.querySelectorAll(".correct-answer").forEach((answer) => {
 						answer.style.color = "white";
-            answer.style.backgroundColor = "darkgreen";
-            toggleButton.style.display = "none";
+						answer.style.backgroundColor = "darkgreen";
+						toggleButton.style.display = "none";
 					});
 				};
 
@@ -147,7 +202,10 @@
 		function formatText(text) {
 			// replace '\n' with '<br>'
 			text = text.replace(/\n/g, "<br>");
-			return text.replace(/\*\*(.*?)\*\*/g, "<b>$1</b>");
+			// replace double asterisks with bold tags
+			text = text.replace(/\*\*(.*?)\*\*/g, "<b>$1</b>");
+			// replace single asterisks with italic tags
+			return text.replace(/\*(.*?)\*/g, "<i>$1</i>");
 		}
 
 		document.getElementById("retry-btn").addEventListener("click", () => {
