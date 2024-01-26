@@ -1,3 +1,5 @@
+## [-> Öffnen <-](https://ystolzenburg.github.io/beko-quiz-gui/)
+
 # Beko Quiz DTM
 
 Web-App, die die Modulkonferenzquizze im bereitgestellten JSON-Format in ein leserliches Dokument umwandelt, welches im Browser optional auch als PDF-Datei "gedruckt" werden kann.
