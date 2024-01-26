@@ -42,7 +42,8 @@
 			<!-- user notice-->
 			<div class="card text-center mb-3">
 				<div class="card-body">
-					<!-- file import field-->
+				
+        <div id="upload-container">
           <div class="mb-3">
             <label for="file-upload" class="form-label"
               >Quiz JSON auswählen</label
@@ -53,20 +54,22 @@
               id="file-upload"
               accept=".json"
             />
+            
 				</div>
         <p>
           oder
         </p>
-        <div class="mb-3">
-					<textarea
-						class="form-control"
-						placeholder="Hier das JSON-Object eingeben: {'name':'BeKo2223 Quiz_x','..."
-						id="json-value"
-						rows="3"></textarea>
-				</div>
-        <button id="upload-btn" class="btn btn-lg w-100 btn-primary">
-          Quiz anzeigen
-        </button>
+          <div class="mb-3">
+            <textarea class="form-control" placeholder="Hier das JSON-Object eingeben: {'name':'BeKo2223 Quiz_x','..."
+                      id="json-value" rows="3"></textarea>
+          </div>
+        
+          <div class="mb-3">
+            <button id="upload-btn" class="btn btn-lg w-100 btn-primary">Quiz anzeigen</button>
+          </div>
+          </div>
+          <button id="retry-btn" class="btn btn-lg w-100 btn-secondary" style="display: none;" >Wiederholen</button>
+        </div>
         </div>
 			</div>
 
@@ -156,17 +159,35 @@
       return text.replace(/\*\*(.*?)\*\*/g, "<b>$1</b>");
     }
 
+    document.getElementById("retry-btn").addEventListener("click", () => {
+      document.getElementById("upload-container").style.display = "block";
+      document.getElementById("retry-btn").style.display = "none";
+
+      // clear the quiz container
+      document.getElementById("quiz-id").innerText = "";
+      document.getElementById("quiz-container").innerHTML = "";
+    });
+
     // Add an event listener to the upload button
     document.getElementById("upload-btn").addEventListener("click", () => {
       try {
-        // Get the JSON data from the textarea and parse it
-        const data = JSON.parse(document.getElementById("json-value").value);
+        if (document.getElementById("file-upload").files.length > 0) {
+          // Get the JSON data from the file and parse it
+          const file = document.getElementById("file-upload").files[0];
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            const data = JSON.parse(e.target.result);
+            // hide the upload button and the textarea
+            document.getElementById("upload-container").style.display = "none";
 
-        // hide the upload button and the textarea
-        document.getElementById("upload-container").style.display = "none";
+            document.getElementById("retry-btn").style.display = "block";
 
-        // Call the function to create the quiz document
-        createQuestionsDocument(data);
+            // Call the function to create the quiz document
+            createQuestionsDocument(data);
+          };
+          reader.readAsText(file);
+          return;
+        }
       } catch (error) {
         // Handle parsing error
         alert("Hm, diese Sprache wird nicht akzeptiert :(", error.message);
