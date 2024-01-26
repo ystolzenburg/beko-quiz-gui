@@ -31,14 +31,14 @@
 			async
 			src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 	</head>
-	<body class="d-flex flex-column h-100">
-		<nav class="navbar bg-dark border-bottom border-body" data-bs-theme="dark">
-			<div class="w-100 px-3 m-auto" style="max-width: 800px">
-				<span class="navbar-brand mb-0 h1">BeKo Quiz GUI</span>
+	<body class="d-flex flex-column h-100 mx-auto" style="max-width: 800px;">
+		<nav class="navbar" data-bs-theme="dark">
+			<div class="w-100 px-3 m-auto rounded-4 ">
+				<span class="navbar-brand mb-0 h1 text-black">BeKo Quiz GUI</span>
 			</div>
 		</nav>
 
-		<div class="container pt-2" style="max-width: 800px">
+		<div class="container pt-2">
 			<!-- user notice-->
 			<div class="card text-center mb-3">
 				<div class="card-body">
@@ -76,20 +76,6 @@
 			<h1 class="text-center" id="quiz-id"></h1>
 			<div id="quiz-container"></div>
 		</div>
-
-		<!-- footer -->
-		<footer class="footer mt-auto py-3 bg-body-tertiary">
-			<div class="container" style="max-width: 800px">
-				<span class="text-body-secondary">
-					&copy;
-					<a
-						href="https://git.tu-berlin.de/j.froembgen/beko-quiz-dtm"
-						target="_blank"
-						>BeKo Quiz DTM</a
-					>
-				</span>
-			</div>
-		</footer>
 	</body>
   <script>
     function createQuestionsDocument(data) {
@@ -177,17 +163,22 @@
           const reader = new FileReader();
           reader.onload = function (e) {
             const data = JSON.parse(e.target.result);
-            // hide the upload button and the textarea
-            document.getElementById("upload-container").style.display = "none";
-
-            document.getElementById("retry-btn").style.display = "block";
 
             // Call the function to create the quiz document
             createQuestionsDocument(data);
           };
           reader.readAsText(file);
-          return;
+
+          // clear the file input
+          document.getElementById("file-upload").value = "";
+        } else {
+          const textData = JSON.parse(document.getElementById('json-value').value);
+          // Call the function to create the quiz document
+          createQuestionsDocument(textData);
         }
+        // hide the upload button and the textarea
+        document.getElementById("upload-container").style.display = "none";
+        document.getElementById("retry-btn").style.display = "block";
       } catch (error) {
         // Handle parsing error
         alert("Hm, diese Sprache wird nicht akzeptiert :(", error.message);
