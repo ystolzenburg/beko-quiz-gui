@@ -103,7 +103,7 @@
 			data.questionList.forEach((question, index) => {
 				// Create the card element
 				const cardEl = document.createElement("div");
-				cardEl.className = "card my-3"; // Bootstrap card with margin
+				cardEl.className = "card my-3 overflow-hidden"; // Bootstrap card with margin
 
 				// Create the card body
 				const cardBodyEl = document.createElement("div");
@@ -123,6 +123,8 @@
 				<p class="card-text">${formatText(question.questionText)}</p>`;
 
 				if (question.TYPE == "RangedQuestion") {
+					cardBodyEl.innerHTML += ` <p class="card-text"><i>Eingabe: Zahl zwischen ${question.rangeMin} und ${question.rangeMax}</i></p>`;
+
 					const answerInput = document.createElement("input");
 					answerInput.type = "number";
 					answerInput.className = "range-input w-100";
