@@ -31,9 +31,9 @@
 			async
 			src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 	</head>
-	<body class="d-flex flex-column h-100 mx-auto" style="max-width: 800px;">
+	<body class="d-flex flex-column h-100 mx-auto" style="max-width: 800px">
 		<nav class="navbar" data-bs-theme="dark">
-			<div class="w-100 px-3 m-auto rounded-4 ">
+			<div class="w-100 px-3 m-auto rounded-4">
 				<span class="navbar-brand mb-0 h1 text-black">BeKo Quiz GUI</span>
 			</div>
 		</nav>
@@ -42,147 +42,153 @@
 			<!-- user notice-->
 			<div class="card text-center mb-3">
 				<div class="card-body">
-				
-        <div id="upload-container">
-          <div class="mb-3">
-            <label for="file-upload" class="form-label"
-              >Quiz JSON auswählen</label
-            >
-            <input
-              class="form-control"
-              type="file"
-              id="file-upload"
-              accept=".json"
-            />
-            
+					<div id="upload-container">
+						<div class="mb-3">
+							<label for="file-upload" class="form-label"
+								>Quiz JSON auswählen</label
+							>
+							<input
+								class="form-control"
+								type="file"
+								id="file-upload"
+								accept=".json" />
+						</div>
+						<p>oder</p>
+						<div class="mb-3">
+							<textarea
+								class="form-control"
+								placeholder="Hier das JSON-Object eingeben: {'name':'BeKo2223 Quiz_x','..."
+								id="json-value"
+								rows="3"></textarea>
+						</div>
+
+						<div class="mb-3">
+							<button id="upload-btn" class="btn btn-lg w-100 btn-primary">
+								Quiz anzeigen
+							</button>
+						</div>
+					</div>
+					<button
+						id="retry-btn"
+						class="btn btn-lg w-100 btn-secondary"
+						style="display: none">
+						Wiederholen
+					</button>
 				</div>
-        <p>
-          oder
-        </p>
-          <div class="mb-3">
-            <textarea class="form-control" placeholder="Hier das JSON-Object eingeben: {'name':'BeKo2223 Quiz_x','..."
-                      id="json-value" rows="3"></textarea>
-          </div>
-        
-          <div class="mb-3">
-            <button id="upload-btn" class="btn btn-lg w-100 btn-primary">Quiz anzeigen</button>
-          </div>
-          </div>
-          <button id="retry-btn" class="btn btn-lg w-100 btn-secondary" style="display: none;" >Wiederholen</button>
-        </div>
-        </div>
 			</div>
-
-			<h1 class="text-center" id="quiz-id"></h1>
-			<div id="quiz-container"></div>
 		</div>
+
+		<h1 class="text-center" id="quiz-id"></h1>
+		<div id="quiz-container"></div>
 	</body>
-  <script>
-    function createQuestionsDocument(data) {
-      document.getElementById("quiz-id").innerText = data.name;
-      const container = document.getElementById("quiz-container");
+	<script>
+		function createQuestionsDocument(data) {
+			document.getElementById("quiz-id").innerText = data.name;
+			const container = document.getElementById("quiz-container");
 
-      data.questionList.forEach((question, index) => {
-        // Create the card element
-        const cardEl = document.createElement("div");
-        cardEl.className = "card my-3"; // Bootstrap card with margin
+			data.questionList.forEach((question, index) => {
+				// Create the card element
+				const cardEl = document.createElement("div");
+				cardEl.className = "card my-3"; // Bootstrap card with margin
 
-        // Create the card body
-        const cardBodyEl = document.createElement("div");
-        cardBodyEl.className = "card-body";
+				// Create the card body
+				const cardBodyEl = document.createElement("div");
+				cardBodyEl.className = "card-body";
 
-        const cardBodyEl2 = document.createElement("div");
-        cardBodyEl2.className = "card-body";
+				const cardBodyEl2 = document.createElement("div");
+				cardBodyEl2.className = "card-body";
 
-        // Add question to the card body
-        cardBodyEl.innerHTML = `<h5 class="card-title">Frage ${
-          index + 1
-        }</h5> <p class="card-text">${formatText(question.questionText)}</p>`;
+				// Add question to the card body
+				cardBodyEl.innerHTML = `<h5 class="card-title">Frage ${
+					index + 1
+				}</h5> <p class="card-text">${formatText(question.questionText)}</p>`;
 
-        const answersListEl = document.createElement("ul");
-        answersListEl.className = "list-group list-group-flush"; // Bootstrap list group
+				const answersListEl = document.createElement("ul");
+				answersListEl.className = "list-group list-group-flush"; // Bootstrap list group
 
-        question.answerOptionList.forEach((option, answerIndex) => {
-          const answerEl = document.createElement("li");
-          answerEl.className = "list-group-item"; // Bootstrap list group item
-          answerEl.innerHTML = formatText(option.answerText);
-          // Add a class if the answer is correct
-          if (option.isCorrect) answerEl.classList.add("correct-answer");
-          answersListEl.appendChild(answerEl);
-        });
+				question.answerOptionList.forEach((option, answerIndex) => {
+					const answerEl = document.createElement("li");
+					answerEl.className = "list-group-item"; // Bootstrap list group item
+					answerEl.innerHTML = formatText(option.answerText);
+					// Add a class if the answer is correct
+					if (option.isCorrect) answerEl.classList.add("correct-answer");
+					answersListEl.appendChild(answerEl);
+				});
 
-        // Create a button to toggle correct answers
-        const toggleButton = document.createElement("button");
-        toggleButton.className = "btn btn-sm btn-success";
-        toggleButton.innerText = "auflösen";
-        toggleButton.onclick = function () {
-          // Toggle visibility of correct answers within this card
-          cardEl.querySelectorAll(".correct-answer").forEach((answer) => {
-            answer.style.color = "#27ae60";
-            toggleButton.parentElement.style.display = "none";
-          });
-        };
+				// Create a button to toggle correct answers
+				const toggleButton = document.createElement("button");
+				toggleButton.className = "btn btn-sm btn-success";
+				toggleButton.innerText = "auflösen";
+				toggleButton.onclick = function () {
+					// Toggle visibility of correct answers within this card
+					cardEl.querySelectorAll(".correct-answer").forEach((answer) => {
+						answer.style.color = "#27ae60";
+						toggleButton.parentElement.style.display = "none";
+					});
+				};
 
-        cardEl.appendChild(cardBodyEl);
-        cardEl.appendChild(answersListEl);
-        cardBodyEl2.appendChild(toggleButton);
-        cardEl.appendChild(cardBodyEl2);
-        container.appendChild(cardEl);
-      });
+				cardEl.appendChild(cardBodyEl);
+				cardEl.appendChild(answersListEl);
+				cardBodyEl2.appendChild(toggleButton);
+				cardEl.appendChild(cardBodyEl2);
+				container.appendChild(cardEl);
+			});
 
-      // Call MathJax to typeset the new content
-      MathJax.typesetPromise();
-    }
+			// Call MathJax to typeset the new content
+			MathJax.typesetPromise();
+		}
 
-    /**
-     * Format the text to replace '**text**' with '<b>text</b>'
-     * @param text {string} - The text to format
-     * @returns {*} - The formatted text
-     */
-    function formatText(text) {
-      // replace '\n' with '<br>'
-      text = text.replace(/\n/g, "<br>");
-      return text.replace(/\*\*(.*?)\*\*/g, "<b>$1</b>");
-    }
+		/**
+		 * Format the text to replace '**text**' with '<b>text</b>'
+		 * @param text {string} - The text to format
+		 * @returns {*} - The formatted text
+		 */
+		function formatText(text) {
+			// replace '\n' with '<br>'
+			text = text.replace(/\n/g, "<br>");
+			return text.replace(/\*\*(.*?)\*\*/g, "<b>$1</b>");
+		}
 
-    document.getElementById("retry-btn").addEventListener("click", () => {
-      document.getElementById("upload-container").style.display = "block";
-      document.getElementById("retry-btn").style.display = "none";
+		document.getElementById("retry-btn").addEventListener("click", () => {
+			document.getElementById("upload-container").style.display = "block";
+			document.getElementById("retry-btn").style.display = "none";
 
-      // clear the quiz container
-      document.getElementById("quiz-id").innerText = "";
-      document.getElementById("quiz-container").innerHTML = "";
-    });
+			// clear the quiz container
+			document.getElementById("quiz-id").innerText = "";
+			document.getElementById("quiz-container").innerHTML = "";
+		});
 
-    // Add an event listener to the upload button
-    document.getElementById("upload-btn").addEventListener("click", () => {
-      try {
-        if (document.getElementById("file-upload").files.length > 0) {
-          // Get the JSON data from the file and parse it
-          const file = document.getElementById("file-upload").files[0];
-          const reader = new FileReader();
-          reader.onload = function (e) {
-            const data = JSON.parse(e.target.result);
+		// Add an event listener to the upload button
+		document.getElementById("upload-btn").addEventListener("click", () => {
+			try {
+				if (document.getElementById("file-upload").files.length > 0) {
+					// Get the JSON data from the file and parse it
+					const file = document.getElementById("file-upload").files[0];
+					const reader = new FileReader();
+					reader.onload = function (e) {
+						const data = JSON.parse(e.target.result);
 
-            // Call the function to create the quiz document
-            createQuestionsDocument(data);
-          };
-          reader.readAsText(file);
+						// Call the function to create the quiz document
+						createQuestionsDocument(data);
+					};
+					reader.readAsText(file);
 
-          // clear the file input
-          document.getElementById("file-upload").value = "";
-        } else {
-          const textData = JSON.parse(document.getElementById('json-value').value);
-          // Call the function to create the quiz document
-          createQuestionsDocument(textData);
-        }
-        // hide the upload button and the textarea
-        document.getElementById("upload-container").style.display = "none";
-        document.getElementById("retry-btn").style.display = "block";
-      } catch (error) {
-        // Handle parsing error
-        alert("Hm, diese Sprache wird nicht akzeptiert :(", error.message);
-      }
-    });
-  </script>
+					// clear the file input
+					document.getElementById("file-upload").value = "";
+				} else {
+					const textData = JSON.parse(
+						document.getElementById("json-value").value
+					);
+					// Call the function to create the quiz document
+					createQuestionsDocument(textData);
+				}
+				// hide the upload button and the textarea
+				document.getElementById("upload-container").style.display = "none";
+				document.getElementById("retry-btn").style.display = "block";
+			} catch (error) {
+				// Handle parsing error
+				alert("Hm, diese Sprache wird nicht akzeptiert :(", error.message);
+			}
+		});
+	</script>
 </html>
