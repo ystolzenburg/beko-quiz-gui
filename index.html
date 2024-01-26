@@ -133,6 +133,12 @@
 					cardBodyEl.appendChild(answerInput);
 					cardEl.appendChild(cardBodyEl);
 
+					const correctAnswer = document.createElement("p");
+					correctAnswer.className = "correct-answer";
+					correctAnswer.style.display = "none";
+					correctAnswer.innerText = `Die richtige Antwort ist: ${question.correctValue}`;
+					cardBodyEl.appendChild(correctAnswer);
+
 					// Create a button to toggle correct answers
 					const toggleButton = document.createElement("button");
 					toggleButton.className = "btn btn-sm btn-success";
@@ -145,15 +151,11 @@
 						} else {
 							answerInput.style.color = "white";
 							answerInput.style.backgroundColor = "darkred";
+							cardEl.querySelector(".correct-answer").style.display =
+								"block";
 						}
 					};
 					cardBodyEl2.appendChild(toggleButton);
-
-					const correctAnswer = document.createElement("p");
-					correctAnswer.className = "correct-answer";
-					correctAnswer.style.display = "none";
-					correctAnswer.innerText = `Die richtige Antwort ist: ${question.correctValue}`;
-					cardBodyEl2.appendChild(correctAnswer);
 
 					cardEl.appendChild(cardBodyEl2);
 					container.appendChild(cardEl);
